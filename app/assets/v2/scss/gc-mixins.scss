@@ -1,0 +1,99 @@
+// import this variable set into every .scss file which will use variables
+@import "./lib/bootstrap/functions";
+@import "./lib/bootstrap/variables";
+@import "./lib/bootstrap/mixins";
+// overwrite bootstrap variables in this file
+@import "./lib/bootstrap-overrides";
+
+// define borders for $position of $width
+@mixin border($position, $minWidth, $maxWidth, $infix: '', $style: '') {
+  @for $i from $minWidth through $maxWidth {
+    $_position: if($infix != '', (#{$position}-#{$infix}), $position);
+    @if $style != '' {
+      .border-#{$style}-#{$_position}-#{$i} {
+        border-#{$position}: #{$i}px #{$style};
+      }
+    } @else {
+      .border-#{$_position}-#{$i} {
+        border-#{$position}: #{$i}px solid;
+      }
+    }
+  }
+}
+
+// define border-colors
+@mixin border-colors($colors...) {
+  @each $i in $colors {
+    .border-#{nth($i, 1)} {
+      border-color: #{nth($i, 2)};
+    }
+  }
+}
+
+// define line-height (n: *em)
+@mixin line-height($heights...) {
+  @each $i in $heights {
+    .line-height-#{nth($i, 1)} {
+      line-height: #{nth($i, 2)}em;
+    }
+  }
+}
+
+// define line-clamp (number of lines)
+@mixin line-clamp($minClamp, $maxClamp) {
+  @for $i from $minClamp through $maxClamp {
+    .line-clamp-#{$i} {
+      display: -webkit-box;
+      -webkit-line-clamp: #{$i};
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+}
+
+// define gap for use with flex
+@mixin gap($minGap, $maxGap) {
+  @for $i from $minGap through $maxGap {
+    .gap-#{$i} {
+      gap: #{$i}em;
+    }
+  }
+}
+
+// define spacers to match designers model
+@mixin spacers($spacers...) {
+
+  @each $breakpoint in map-keys($grid-breakpoints) {
+
+    @include media-breakpoint-up($breakpoint) {
+
+      $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+      @each $prop, $abbrev in (margin: m, padding: p) {
+        @each $i in $spacers {
+          // set margins/paddings according to spacer's rem
+          .spacer-#{$abbrev}#{$infix}-#{nth($i, 1)} {
+            #{$prop}: #{nth($i, 2)};
+          }
+          .spacer-#{$abbrev}t#{$infix}-#{nth($i, 1)},
+          .spacer-#{$abbrev}y#{$infix}-#{nth($i, 1)} {
+            #{$prop}-top: #{nth($i, 2)};
+          }
+          .spacer-#{$abbrev}b#{$infix}-#{nth($i, 1)},
+          .spacer-#{$abbrev}y#{$infix}-#{nth($i, 1)} {
+            #{$prop}-bottom: #{nth($i, 2)};
+          }
+          .spacer-#{$abbrev}l#{$infix}-#{nth($i, 1)},
+          .spacer-#{$abbrev}x#{$infix}-#{nth($i, 1)} {
+            #{$prop}-left: #{nth($i, 2)};
+          }
+          .spacer-#{$abbrev}r#{$infix}-#{nth($i, 1)},
+          .spacer-#{$abbrev}x#{$infix}-#{nth($i, 1)} {
+            #{$prop}-right: #{nth($i, 2)};
+          }
+        }
+      }
+    }
+  }
+}

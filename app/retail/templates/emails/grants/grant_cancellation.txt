@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% trans "Grant Ended" %}
+
+{% trans "Grant" %} {{ grant.title }} {% trans "has been cancelled" %}
+
+
+{% trans "View Inactive Grant here" %} {% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}
+
+
+{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}

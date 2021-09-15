@@ -1,0 +1,34 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="tooltip-info text-left">
+  <p class="font-smaller-1 font-weight-semibold">Possible Status</p>
+  <ol class="pl-3 mb-2 font-smaller-2">
+    <li class="mb-2"><strong>{% trans "Open" %}:</strong> {% trans "A funded bounty is available for anyone to work on." %}</li>
+    <li class="mb-2"><strong>{% trans "Work Started" %}:</strong> {% trans "Work has been started by at least one person." %}</li>
+    <li class="mb-2"><strong>{% trans "Work Submitted" %}:</strong> {% trans "Completed work has been submitted by for review." %}</li>
+    <li class="mb-2"><strong>{% trans "Work Done" %}:</strong> {% trans "The submitted project has been accepted and the funds have been paid." %}</li>
+    <li class="mb-2"><strong>{% trans "Reserved" %}:</strong> {% trans "The project has been reserved for an specific hunter." %}</li>
+  </ol>
+
+  <p class="font-smaller-1 font-weight-semibold">Possible Status</p>
+  <ol class="pl-3 mb-0 font-smaller-2">
+    <li class="mb-2"><strong>{% trans "Expired" %}:</strong> {% trans "Work was not completed by the expiration date." %}</li>
+    <li class="mb-2"><strong>{% trans "Canceled" %}:</strong> {% trans "A funded bounty was  cancelled by the owner of the project" %}</li>
+  </ol>
+
+</div>

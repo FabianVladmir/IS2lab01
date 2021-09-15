@@ -1,0 +1,34 @@
+{% comment %}
+    Copyright (C) 2021 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+<div class="mt-2">
+  <div class="infinite-container activity_stream" data-what="{{what}}">
+    {% if pinned %}
+        {% include 'shared/activity.html' with is_pin=True row=pinned.activity %}
+    {% endif %}
+
+    {% for row in activities %}
+      {% include 'shared/activity.html' with for_email=for_email %}
+    {% endfor %}
+    {% if not hide_loading %}
+      <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
+    {% endif %}
+    {% if not suppress_more_link %}
+      <a class="btn btn-outline-primary btn-sm d-block w-50 mt-5 mx-auto infinite-more-link" href="{% if target %}{{target}}{% else %}?what={{what}}&page={{next_page}}{% endif %}" style="{% if not supress_infinite_more_link_hidden %}display:none;{%endif%}">{% if infinite_more_copy %}{{infinite_more_copy}}{% else %}More{%endif%}</a>
+    {% endif %}
+  </div>
+</div>

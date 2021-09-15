@@ -1,0 +1,151 @@
+{% load i18n static %}
+{% if not hidden %}
+  <div id="tabs">
+    <div class="container">
+      <div id="profile-tabs" class="tab-container font-body mt-3 mb-4">
+        <button type="button" id="nav-description" href="{{profile.url}}/activity" class="text-center section-tab {% if tab == "activity" %} active {% endif %}">
+          {% trans "ACTIVITY" %}
+        </button>
+        <button type="button" id="nav-description" href="{{profile.url}}/people" class="text-center section-tab {% if tab == "people" %} active {% endif %}">
+          {% trans "PEOPLE" %}
+        </button>
+        {% if show_resume_tab %}
+          <button type="button" id="nav-description" href="{{profile.url}}/resume" class="text-center section-tab {% if tab == "resume" %} active {% endif %}">
+            {% if not profile.show_job_status and is_my_profile %}
+              <i class="fas fa-eye"></i>
+            {% endif %}
+            {% trans "RESUME" %}
+          </button>
+        {% endif %}
+        {% if active_bounties_count %}
+          <button type="button" id="nav-description" href="{{profile.url}}/active" class="text-center section-tab {% if tab == "active" %} active {% endif %}">
+            {% trans "ACTIVE ISSUES" %}
+            <span  class="nav-badge">({{active_bounties_count}})</span>
+          </button>
+        {% endif %}
+        {% if all_feedbacks|length %}
+          <button type="button" id="nav-description" href="{{profile.url}}/ratings" class="text-center section-tab {% if tab == "ratings" %} active {% endif %}">
+            {% trans "RATINGS" %}
+            <span  class="nav-badge">({{all_feedbacks|length}})</span>
+          </button>
+        {% endif %}
+        {% if portfolio_count or is_my_profile %}
+          <button type="button" id="nav-description" href="{{profile.url}}/portfolio" class="text-center section-tab {% if tab == "portfolio" %} active {% endif %}">
+            {% trans "PORTFOLIO" %}
+            <span  class="nav-badge">({{portfolio_count}})</span>
+          </button>
+        {% endif %}
+        {% if profile.organizations|length %}
+          <button type="button" id="nav-description" href="{{profile.url}}/orgs" class="text-center section-tab {% if tab == "orgs" %} active {% endif %}">
+            {% trans "ORGS" %}
+            <span  class="nav-badge">({{profile.organizations|length}})</span>
+          </button>
+        {% endif %}
+        {% if total_grant_actions %}
+          <button type="button" id="nav-description" href="{{profile.url}}/grants" class="text-center section-tab {% if tab == "grants" %} active {% endif %}">
+            {% trans "GRANTS" %}
+            {% if total_grant_actions %}<span  class="nav-badge">({{total_grant_actions}})</span>{%endif%}
+          </button>
+        {% endif %}
+        {% if total_quest_success %}
+          <button type="button" id="nav-description" href="{{profile.url}}/quests" class="text-center section-tab {% if tab == "quests" %} active {% endif %}">
+            {% trans "QUESTS" %}
+            {% if total_quest_success %}<span  class="nav-badge">({{total_quest_success}})</span>{%endif%}
+          </button>
+        {% endif %}
+        {% if not profile.is_org or total_kudos_count %}
+          <button type="button" id="nav-description" href="{{profile.url}}/kudos" class="text-center section-tab {% if tab == "kudos" %} active {% endif %}">
+            {% trans "KUDOS" %}
+            {% if total_kudos_count %}<span  class="nav-badge">({{total_kudos_count}})</span>{%endif%}
+          </button>
+        {% endif %}
+        {% if projects_count %}
+          <button type="button" id="nav-description" href="{{profile.url}}/hackathons" class="text-center section-tab {% if tab == "hackathons" %} active {% endif %}">
+            {% trans "HACKATHONS" %}
+            {% if projects_count %}<span class="nav-badge">({{projects_count}})</span>{% endif %}
+        {% endif %}
+        {% if is_staff and personal_tokens_count %}
+          <button type="button" id="nav-description" href="{{profile.url}}/ptokens" class="text-center section-tab {% if tab == "ptokens" %} active {% endif %}">
+            {% trans "TIME TOKENS" %}
+            {% if personal_tokens_count %}<span  class="nav-badge">({{personal_tokens_count}})</span>{%endif%}
+          </button>
+        {% endif %}
+        {% if is_editable and profile.viewed_by.count %}
+          <button type="button" id="nav-description" href="{{profile.url}}/viewers" class="text-center section-tab {% if tab == "viewers" %} active {% endif %}">
+            <i class="fas fa-eye"></i>
+            {% trans "VIEWERS" %}
+            {% if profile.viewed_by.count %}<span  class="nav-badge">({{profile.viewed_by.count}})</span>{%endif%}
+          </button>
+        {% endif %}
+        {% if is_editable and profile.persona_is_hunter and earnings_total %}
+          <button type="button" id="nav-description" href="{{profile.url}}/earnings" class="text-center section-tab {% if tab == "earnings" %} active {% endif %}">
+            <i class="fas fa-eye"></i>
+            {% trans "EARNINGS" %}
+            {% if earnings_total %}<span  class="nav-badge">(${{earnings_total}})</span>{%endif%}
+          </button>
+        {% endif %}
+        {% if is_editable and profile.persona_is_funder and spent_total %}
+          <button type="button" id="nav-description" href="{{profile.url}}/spent" class="text-center section-tab {% if tab == "spent" %} active {% endif %}">
+            <i class="fas fa-eye"></i>
+            {% trans "SPENT" %}
+            {% if spent_total %}<span  class="nav-badge">(${{spent_total}})</span>{%endif%}
+          </button>
+        {% endif %}
+        {% if not profile.is_org and is_my_profile %}
+          <button type="button" id="nav-description" href="{{profile.url}}/trust" class="text-center section-tab {% if tab == "trust" %} active {% endif %}">
+            {% trans "TRUST BONUS" %}
+          </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+
+<div class="tab-content profile-tab">
+  <div class="tab-pane fade show active">
+    <div class="container position-relative">
+      <div class="row mb-2 mt-0 bg-white rounded px-3 py-2">
+        <div class="col-12 px-lg-0">
+          {% if tab == 'kudos' %}
+            {% include 'profiles/tab_kudos.html' %}
+          {% elif tab == 'follow' %}
+            {% include 'profiles/tab_follow.html' %}
+          {% elif tab == 'resume' %}
+            {% include 'profiles/tab_resume.html' %}
+          {% elif tab == 'active' %}
+            {% include 'profiles/tab_active.html' %}
+          {% elif tab == 'portfolio' %}
+            {% include 'profiles/tab_portfolio.html' %}
+          {% elif tab == 'orgs' %}
+            {% include 'profiles/tab_orgs.html' %}
+          {% elif tab == 'tribe' %}
+            {% include 'profiles/tab_tribe.html' %}
+          {% elif tab == 'people' %}
+            {% include 'profiles/tab_people.html' %}
+          {% elif tab == 'activity' %}
+            {% include 'profiles/tab_activity.html' %}
+          {% elif tab == 'ratings' %}
+            {% include 'profiles/tab_ratings.html' %}
+          {% elif tab == 'viewers' %}
+            {% include 'profiles/tab_viewers.html' %}
+          {% elif tab == 'earnings' %}
+            {% include 'profiles/tab_earnings.html' %}
+          {% elif tab == 'spent' %}
+            {% include 'profiles/tab_spent.html' %}
+          {% elif tab == 'grants' %}
+            {% include 'profiles/tab_grant_contribs.html' %}
+          {% elif tab == 'quests' %}
+            {% include 'profiles/tab_quests.html' %}
+          {% elif tab == 'hackathons' %}
+            {% include 'profiles/tab_hackathons.html' %}
+          {% elif tab == 'ptokens' %}
+            {% include 'profiles/tab_ptokens.html' %}
+          {% elif tab == 'trust' %}
+            {% include 'profiles/trust-vue.html' %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

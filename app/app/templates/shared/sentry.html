@@ -1,0 +1,82 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% if raven_js_dsn %}
+  <script
+    src="https://browser.sentry-cdn.com/{{ raven_js_version }}/bundle.min.js"
+    integrity="sha384-a1zd+NHj/GIqnlXIHuEKFontqYxBdK9Zwslrvnhr1KfU9tBDzKbM55gQFXlHYDiD"
+    crossorigin="anonymous"
+  ></script>
+
+  <script>
+
+    Sentry.init({
+      dsn: "{{ raven_js_dsn }}",
+      // this assumes your build process sets "npm_package_version" in the env
+      release: "gitcoin-web@{{ release }}",
+      environment: '{{ env }}',
+      // We recommend adjusting this value in production, or using tracesSampler
+      // for finer control
+      tracesSampleRate: 1.0,
+      ignoreErrors: [
+        // Random plugins/extensions
+        'top.GLOBALS',
+        // See: http://blog.errorception.com/2012/03/tale-of-unfindable-js-error.html
+        'originalCreateNotification',
+        'canvas.contentDocument',
+        'MyApp_RemoveAllHighlights',
+        'http://tt.epicplay.com',
+        'Can\'t find variable: ZiteReader',
+        'jigsaw is not defined',
+        'ComboSearch is not defined',
+        'http://loading.retry.widdit.com/',
+        'atomicFindClose',
+        // Facebook borked
+        'fb_xd_fragment',
+        // ISP "optimizing" proxy - `Cache-Control: no-transform` seems to
+        // reduce this. (thanks @acdha)
+        // See http://stackoverflow.com/questions/4113268
+        'bmi_SafeAddOnload',
+        'EBCallBackMessageReceived',
+        // See http://toolbar.conduit.com/Developer/HtmlAndGadget/Methods/JSInjection.aspx
+        'conduitPage'
+      ],
+      denyUrls: [
+        // Facebook flakiness
+        /graph\.facebook\.com/i,
+        // Facebook blocked
+        /connect\.facebook\.net\/en_US\/all\.js/i,
+        // Woopra flakiness
+        /eatdifferent\.com\.woopra-ns\.com/i,
+        /static\.woopra\.com\/js\/woopra\.js/i,
+        // Chrome extensions
+        /extensions\//i,
+        /^chrome:\/\//i,
+        // Other plugins
+        /127\.0\.0\.1:4001\/isrunning/i,  // Cacaoweb
+        /webappstoolbarba\.texthelp\.com\//i,
+        /metrics\.itunes\.apple\.com\.edgesuite\.net\//i
+      ]
+    });
+    {% if github_handle %}
+      Sentry.setUser({
+        username: '{{ github_handle }}',
+        id: {{ user.id|default_if_none:"0" }}
+      });
+      Sentry.setTag("profile_id", {{ profile_id|default_if_none:"0" }});
+    {% endif %}
+  </script>
+{% endif %}

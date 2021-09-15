@@ -1,0 +1,15 @@
+User-agent: *
+
+{% for handle in hidden_profiles %}
+Disallow: /{{ handle }}*
+Disallow: /profile/{{ handle }}*
+{% endfor %}
+
+Disallow: /kudos/redeem/*
+Disallow: /login/github/*
+
+User-agent: Yandex
+Disallow: /
+
+
+Sitemap: {{ settings.BASE_URL }}sitemap.xml

@@ -1,0 +1,28 @@
+{% load i18n %}
+<div id="CookielawBanner" class="g-font-muli">
+  <div class="container">
+    <div class="d-flex">
+      <div class="row cookie-row">
+        <div class="col-8 col-md-10">
+          <p class="cookie-info cookie-body-font">
+            <span class="font-weight-bold">Cookies Disclaimer</span>
+            <span>
+              {% trans "By continuing to browse the site, you are agreeing to our use of cookies. Learn more at" %}
+              <a href="{% url 'cookie' %}">{% trans "Gitcoin's Privacy Policy." %}</a>
+            </span>
+          </p>
+          <p class="cookie-info cookie-body-font">
+            <span class="font-weight-bold">Privacy Policy</span>
+            <span>
+              {% trans "Gitcoin is GDPR compliant. Learn more in" %}
+              <a href="/legal/terms">{% trans "Gitcoin's Terms & Conditions." %}</a>
+            </span>
+          </p>
+        </div>
+        <div class="col-4 col-md-2">
+          <button id="CookielawBannerAccept" class="btn btn-primary font-body text-capitalize float-right">{% trans "COOKIE_INFO_OK" %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

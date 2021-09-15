@@ -1,0 +1,133 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% load is_in_list %}
+
+<div class="navbar navbar-onepager navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between">
+  <a class="navbar-brand py-0 text-center" href="{% url 'index' %}">
+    <img id="logo" src="{% static "v2/images/new-logos/gc-h-neg.svg" %}" width="150" height="50" />
+    {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/heatmap,/gas/guzzlers,/gas/faucets" %}
+    <img id="addon" src="{% static "v2/images/gas_logo.gif" %}"/>
+    <p style="color:white; font-size: 12px;">Gas Station</p>
+    {% endif %}
+  </a>
+
+
+
+  {% if user.is_authenticated %}
+  <div class="d-flex order-0 order-last text-white">
+    {% include 'shared/notifications.html' with onepager=True %}
+    <a class="nav-link login" href="{% url 'profile' %}">
+      <img class="nav_avatar rounded-circle" width=40 height=40
+        src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      {{ user }}
+    </a>
+    <div class="nav-item dropdown interior m-auto">
+
+      <a class="nav-link dropdown-toggle m-auto pr-0 text-white" href="#" id="navbarDropdownWallet" role="button"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet">
+        <a class="dropdown-item" href="#" id="wallet-btn">
+          Connect Wallet
+        </a>
+        <div class="dropdown-item wallet-hidden d-none">
+          <small>connected to:</small>
+          <div class="network-name"></div>
+          <div class="selected-account" data-toggle="tooltip" title="Click to copy"></div>
+        </div>
+        <div id="wallet-accounts" class="dropdown-item wallet-hidden d-none"></div>
+        <div class="dropdown-divider wallet-hidden d-none"></div>
+        <a href="#" class="dropdown-item wallet-hidden d-none" id="btn-disconnect">
+          Disconnect
+        </a>
+      </div>
+
+    </div>
+  </div>
+  <div id="templates" style="display: none">
+    <template id="template-balance">
+      <div class="wallet-option">
+      	<div class="wallet-address"></div>
+      	<small class="wallet-balance"></small>
+      </div>
+    </template>
+  </div>
+  {% else %}
+  <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
+    <i class="fab fa-github"></i>{% trans "Login" %}
+  </a>
+  {% endif %}
+</div>
+
+<style>
+  #addon {
+    max-height: 45px;
+    margin-left: 7px;
+    margin-top: 20px;
+    margin-bottom: -25px;
+    max-width: 50px;
+  }
+
+  .ethinfo-hover {
+    margin-top: 0.5rem;
+    float: none !important;
+    font-weight: 600;
+  }
+
+  .navbar {
+    justify-content: initial;
+  }
+
+  .nav_avatar {
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  .navbar-network {
+    position: initial;
+    border-color: #fff;
+  }
+
+  .nav-link.login {
+    top: 15px;
+    right: 15px;
+    text-transform: none;
+  }
+
+  .nav-link.login:hover {
+    color: #FFFFFF;
+  }
+
+  .nav-link.login i {
+    margin-right: 15px;
+  }
+
+  .nav-link.logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .nav-link.login,
+    .nav_avatar {
+      display: none;
+    }
+  }
+</style>

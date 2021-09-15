@@ -1,0 +1,195 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+Copyright (C) 2021 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
+{% endcomment %}
+{% load i18n humanize static kudos_extras %}
+{% block content %}
+<style>
+  .kudos-fancy-bg {
+    background-color: #6F3FF5;
+    background-image: url("{% static 'v2/images/kudos/kudos-bg.png' %}");
+    background-position: center;
+    background-size: cover;
+    padding: .5em;
+  }
+
+  .kudos-fancy-bg h1 {
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 59px;
+  }
+
+  .kudos-fancy-bg h3 {
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 50px;
+  }
+
+  .kudos-fancy-bg p {
+    color: #FFFFFF;
+  }
+
+  .kudos-fancy-bg .kudos-sparkle {
+    position: absolute;
+    background-image: url("{% static 'v2/images/kudos/kudos-sparkle.png' %}");
+    width: 185px;
+    height: 178px;
+    top: 85%;
+    left: 15%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 70px;
+    display: inline;
+  }
+
+  .kudos-fancy-bg .kudos-sparkle-reverse {
+    transform: scaleX(-1) scaleY(-1);
+    left: 60%;
+    top: -10%;
+  }
+
+  .kudos-fancy-bg .kudos-hex-container {
+    position: relative;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 150px;
+    height: 360px;
+  }
+
+  .kudos-fancy-bg .kudos-hex-content {
+    position: relative;
+    top: 10%;
+  }
+
+  .kudos-fancy-bg .kudos-hex-content img {
+    position: relative;
+    width: 330px;
+    max-width: 100%;
+  }
+
+  .kudos-fancy-bg .kudos-link-button {
+    margin-bottom: 20px;
+  }
+
+  /* Extra small devices (phones, 600px and down) */
+  @media only screen and (max-width: 600px) {
+    .kudos-fancy-bg .kudos-link-button {
+      display: inline-grid;
+      margin-bottom: 20px;
+    }
+    .kudos-fancy-bg .kudos-link-button a {
+      margin: 3px auto;
+    }
+  }
+
+  @media only screen and (min-width: 600px) {
+
+  }
+</style>
+<div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/kudos.png' %}">
+  <div class="kudos-fancy-bg">
+    <h1>
+      {% if is_new %}
+      {% trans "Awesome!" %}
+      {% else %}
+      🕑 {% trans "Reminder: Kudos Expires Soon" %} 🕝
+      {% endif %}
+    </h1>
+    <h2 style="text-transform: none; color: white; text-align: center;">
+      {% trans "You received a" %} <a href="{{ token_elem.kudos_token_cloned_from.url }}?{{ utm_tracking }}"><b
+          style="text-transform: capitalize; color: #FFF; letter-spacing: 0;">
+          "{{token_elem.name|humanize_name }}"</b></a> {% trans "kudos" %}
+      {% if kudos_transfer.from_name %}
+      {% trans "from" %} <b>{{ kudos_transfer.from_name }}</b>
+      {% endif %}
+      !
+    </h2>
+    {% if not is_new %}
+    {{ kudos_transfer.created_on|naturaltime }}
+    {% endif %}
+    <div class="kudos-hex-container">
+      <div class="kudos-sparkle">
+        &nbsp;
+      </div>
+      <div class="kudos-sparkle kudos-sparkle-reverse">
+        &nbsp;
+      </div>
+      <div class="kudos-hex-content">
+        <a href="{{ token_elem.kudos_token_cloned_from.url }}?{{ utm_tracking }}">
+          <img class="center-img" src="{{ token_elem.img_url }}" alt="{{ token_elem.name|humanize_name }}">
+        </a>
+      </div>
+    </div>
+    <br>
+    <p>
+      {% if comments_priv %}
+      {{ comments_priv }}<br>
+      {% endif %}
+      {% if comments_public %}
+      {{ comments }}<br>
+      {% endif %}
+      {% if kudos_transfer.github_url %}
+      {% if kudos_transfer.from_name %}
+      {{ kudos_transfer.from_name }}
+      {% else %}
+      {% trans "The sender" %}
+      {% endif %}
+      {% trans " said it was for your work on" %} <a href="{{ kudos_transfer.github_url }}?{{ utm_tracking }}">{{
+        kudos_transfer.github_url }}</a>.
+      {% endif %}
+    </p>
+    <div style="margin-left: 0; margin-right: 0; text-align: center;">
+      {% if not already_redeemed %}
+      <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center"
+        bgcolor="#15003e" href="{{ link }}?{{ utm_tracking }}">{% trans "Accept Kudos" %}</a>
+      {% endif %}
+      {% if already_redeemed %}
+      <p>
+        {% trans "This kudos has been remitted automatically to the Ethereum address on file (and to your Gitcoin profile). " %}
+      </p>
+      <BR>
+      <div class="kudos-link-button">
+        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center"
+          bgcolor="#15003e" href="https://gitcoin.co/profile/{{kudos_transfer.username}}?{{ utm_tracking }}">{% trans "View Profile" %}</a>
+        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center"
+          bgcolor="#15003e" href="https://etherscan.io/tx/{{kudos_transfer.txid}}">{% trans "View Transaction" %}</a>
+      </div>
+
+      {% elif show_expires %}
+      <p>
+        {% trans "The kudos expires on" %} <strong>{{ kudos_transfer.expires_date }}, {% trans "in just" %} {{
+          kudos_transfer.expires_date|naturaltime }}</strong>. {% trans "No pressure, but if you wanted to redeem your
+        kudos sooner rather than later that'd be 👌:" %}
+      </p>
+      {% endif %}
+    </div>
+  </div>
+  <div style="margin-top: 2em;">
+    <!-- <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{ token_elem.name|humanize_name }}" width="134"
+      height="155"> -->
+    <p>
+      {% trans "Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star." %} {% trans "Kudos are non-fungible tokens that can also be bought and sold on the" %} <b>{% trans "Kudos Marketplace" %}</b>{% trans "." %}
+    </p>
+  </div>
+  <div style="margin-top: 3em;">
+    <a class="button" href="{% url 'kudos_about' %}?{{ utm_tracking }}">{% trans "Learn More" %}</a>
+  </div>
+</div>
+{% endblock %}

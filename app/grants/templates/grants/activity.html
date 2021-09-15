@@ -1,0 +1,19 @@
+{% load static humanize i18n grants_extra %}
+<div class="px-0">
+  <div class="row mb-3 py-2 px-0 mx-sm-0">
+    <div class="col-12 px-0">
+
+      {% if contributions %}
+        <hr>
+        <div id="contributions">
+          <p class="font-body font-weight-semibold subtitle mb-0">
+            <i class="g-icon g-icon__dot-circle mr-2"></i>  {% trans "Contributions" %} ({{contributions|length}})
+          </p>
+          {% for transaction in contributions %}
+            {% include 'grants/transaction.html' %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

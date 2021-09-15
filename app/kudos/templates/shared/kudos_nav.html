@@ -1,0 +1,55 @@
+{% comment %}
+    Copyright (C) 2021 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static matches cookielaw_tags %}
+<nav class="navbar navbar-expand-md navbar-light bg-white p-0 px-md-1 w-100">
+  <a class="d-none d-md-block mr-2 mb-1 ml-2" href="{% url 'index' %}">
+    {% include 'shared/helmet-purple-animated.html' %}
+  </a>
+  <i class="black font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
+  <a class="navbar-brand sticky-top py-0 mr-0 bg-white my-md-auto" href="{% url 'kudos_marketplace' %}">
+    <span id="logo_kudos" style="width: 150px;" class="my-auto overflow-hidden d-block p-1 pl-2">
+      <!-- <img class="mw-100 logo-static" src="{% static 'v2/images/top-bar/kudos-neg.svg' %}" alt="kudos" height="35"> -->
+      {% include 'shared/svg-embed/h35px_kudos.svg' %}
+    </span>
+  </a>
+  {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
+    <button id="wallet-button" class="navbar-network ml-xl-5 py-1 px-2 hidden btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fas fa-circle pr-1"></i>
+      <span id="current-network"></span>
+    </button>
+    <div id="wallet-dropdown" class="dropdown-menu" aria-labelledby="wallet-button" style="top: 50px; left: 19vw;">
+      <a id="copy-address" class="dropdown-item" href="javascript:;">
+        <i class="fas fa-copy"></i>
+        Copy Wallet Address
+      </a>
+      <a id="go-to-wallet" class="dropdown-item" href="#" target="_blank">
+        <i class="fas fa-wallet"></i>
+        Go to Your Wallet
+      </a>
+      <a id="change-wallet" class="dropdown-item" href="#">
+        <i class="fas fa-exchange-alt"></i>
+        Change Wallet Provider
+      </a>
+    </div>
+  {% endif %}
+  {% include 'shared/menu.html' %}
+</nav>
+{% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
+  <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
+{% endif %}
+{% cookielaw_banner %}

@@ -1,0 +1,14 @@
+*.min.js
+
+app/assets/v2/js/event_ethdenver2019/blockies.js
+app/assets/v2/js/lib/*
+app/assets/v2/js/abi.js
+app/assets/landingpage/*
+
+app/assets/onepager/js/confetti.js
+
+app/assets/v2/js/dataviz/*
+app/assets/v2/js/ethereumjs-accounts.js
+app/assets/onepager/js/tx.js
+app/assets/onepager/js/bignumber.js
+app/assets/v2/js/data-chains.js

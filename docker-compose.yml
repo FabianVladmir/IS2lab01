@@ -1,0 +1,133 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:10.1-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 128M
+
+  elasticsearch:
+    image: launcher.gcr.io/google/elasticsearch5
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+
+  ipfs:
+    image: ipfs/go-ipfs:v0.6.0
+    restart: unless-stopped
+    volumes:
+      - 'ipfsexport:/export'
+      - 'ipfsdata:/data/ipfs'
+    ports:
+      - "4001:4001"
+      - "4002:4002"
+      - "5001:5001"
+      - "8080:8080"
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 128M
+
+  web:
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONIOENCODING=utf8
+      - PYTHONPATH=/code/app
+      - PYTHONPATH=/usr/bin/python3
+    env_file:
+      - app/app/.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gitcoinco/web:latest
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+      - "3030:3030"
+      - "8001:8001"
+      - "35729:35729"
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 512M
+
+  testrpc:
+    image: trufflesuite/ganache-cli
+    ports:
+      - "8545:8545"
+    command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 128M
+
+  redis:
+    restart: unless-stopped
+    image: redis:4.0-alpine
+    env_file:
+      - app/app/.env
+    volumes:
+      - redis:/data
+    ports:
+      - "6379:6379"
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 128M
+
+  worker: &worker
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/code/app
+    env_file:
+      - app/app/.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gitcoinco/web:latest
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+    command: ["bash","./bin/celery/worker/run.sh"]
+#  scheduler:
+#    <<: *worker
+#    command: ["bash","./bin/celery/scheduler/run.sh"]
+
+volumes:
+  pgdata:
+  ipfsdata:
+  ipfsexport:
+  redis:

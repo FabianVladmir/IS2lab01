@@ -1,0 +1,19 @@
+{% load i18n %}
+
+{% trans "Gitcoin Heart Robot" %}
+
+{% trans "Your contribution was successful!" %} {{ grant.title }}
+
+{% trans "The world of open source is a better place because of you." %}
+
+{{ grant.description }}
+
+{% trans "You have contributed" %}
+
+{{ transaction.value_true }} {{ transaction.token_name }}
+{% if subscription.token_symbol == 'ZEC' %}
+  {% trans "You can see the transaction info at" %} {% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}
+{% else %}
+  {% trans "You can see the transaction " %} {{ transaction.link }} {% trans "here." %}
+{% endif %}
+{% trans "View Grant" %} at {% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}

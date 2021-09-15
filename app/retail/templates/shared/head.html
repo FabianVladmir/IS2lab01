@@ -1,0 +1,78 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static is_in_list matches bundle %}
+
+<meta charset="utf-8">
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+{% include 'shared/tag_manager_1.html' %}
+
+{% bundle css file libs %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/index.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gitcoin.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/top-nav.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/navbar.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/base.scss" %} />
+{% endbundle %}
+
+{% if not slim %}
+  {% bundle css file jquery %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery.modal.min.scss" %} />
+  {% endbundle %}
+{% endif %}
+
+{% bundle css file components %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery.select2.min.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/buttons.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/timeline.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/carousel.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/colors.scss" %} />
+  <!-- Forms -->
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/checkbox.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/drop.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/form.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/input.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/label.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/radio.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/select.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/external_bounties/checkboxes.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/notifications.scss" %} />
+{% endbundle %}
+
+<!-- Grants -->
+{% if 'grants' in request.path %}
+  {% bundle css file grants %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/grant.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/cancel.scss" %} />
+  {% endbundle %}
+{% endif %}
+
+<!-- Cookie Consent -->
+{% bundle css file cookielaw %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/cookielaw/cookielaw.scss" %} />
+{% endbundle %}
+
+<title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
+{% include 'shared/favicon.html' %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+{% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
+{% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
+{% if env == 'prod' %}
+<script>document.domain = 'gitcoin.co';</script>
+{% endif %}

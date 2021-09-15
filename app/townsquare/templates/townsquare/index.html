@@ -1,0 +1,300 @@
+{% comment %}
+Copyright (C) 2021 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load humanize static i18n bundle %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% if use_pic_card %}
+      {% include 'shared/cards_pic.html' %}
+    {% else %}
+      {% include 'shared/cards.html' %}
+    {% endif %}
+    {% bundle css file townsquare %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %}>
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %}>
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/theme_switcher.scss" %}>
+    {% endbundle %}
+    <style>
+      img.hackathon-card-logo{
+        max-height: 5rem;
+        max-width: 5rem;
+        border-radius: .3rem;
+        background: var(--bg-shade-0);
+      }
+
+      .hackathon-card-logo a {
+        color: #000000;
+      }
+
+      .townsquare_block-header.box-collapse {
+        background: #fff;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-transform: none;
+        border-radius: 5px 5px 0 0;
+      }
+
+      .box-hackathons {
+        border-radius: 0 0 5px 5px;
+      }
+
+      .box-hackathons .card {
+        border: none;
+      }
+
+      .box-hackathons .card-header {
+        border-bottom: none;
+        background-color: transparent;
+      }
+
+      .box-hackathons-townsquare .hackathon-actions {
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .box-hackathons-townsquare .card-body {
+        padding: 11px 0;
+      }
+
+      .box-hackathons-townsquare .card-body .font-smaller-2 {
+        color: #666666;
+      }
+
+      .box-hackathons-townsquare .card-body .font-weight-semibold {
+        margin: 0;
+      }
+
+      .card-ribbon {
+        top: -15px;
+      }
+
+      .nav.collapse:not(.show) {
+        display: none!important;
+      }
+    </style>
+    <script src='{% static "v2/js/theme_switcher.js" %}'></script>
+  </head>
+
+  <body class="{{ active }} bg-lightblue g-font-muli" >
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="bg-white sticky-top sticky-nav">
+      {% include 'home/nav.html' %}
+    </div>
+    <div class="townsquare_main container-fluid">
+      {% if is_staff and admin_link %}
+      <div class="alpha-warning font-caption mb-0">
+        <span class="font-weight-bold">Staff only</span>
+        <a style="color:white;" href="{{admin_link}}">{% trans "Activity Feed Admin" %}</a>
+      </div>
+      {% endif %}
+
+      <div id=top_bar>
+        {% if SHOW_DRESSING %}
+
+        {% include 'townsquare/shared/offers_top.html' %}
+        {% include 'townsquare/shared/announcements.html' %}
+
+        {% endif %}
+      </div>
+
+      <div class="">
+        <div class="my-1 px-sm-3">
+          <div class="row">
+            <div class="col-12 mb-2">
+              <ul id="mobile_nav_toggle" class="nav nav-tabs mt-3 font-smaller-2 font-weight-semibold border-0" id="myTab" role="tablist">
+                  <li class="nav-item">
+                    <a data-toggle="tooltip" class="nav-link nav-line active "
+                      href="#" data-slug="feed" title=""
+                    >
+                      Feed
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a data-toggle="tooltip" class="nav-link nav-line"
+                      href="#" data-slug="actions" title=""
+                    >
+                      Goodies
+                    </a>
+                  </li>
+              </ul>
+            </div>
+          </div>
+          <div class="row {% if user.is_authenticated %} mt-4 {% else %} mt-2 {% endif %}townsquare_header">
+          {% if not user.is_authenticated %}
+          <div class="col-12">
+            <div class="get-started mb-4">
+              <div class="d-flex flex-column align-items-center flex-fill ml-3 text-center">
+                <p class="p-0 font-weight-semibold">Gitcoin is a community of {{ audience|intcomma }} amazing open source developers working remotely to build in Web3.</p>
+                <div class="font-caption text-left">
+                  <button class="btn action bg-dark-blue font-smaller-2 btn-sm mt-2" data-toggle="modal" data-target="#modal-get-started">Get Started</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+            <div class="col-12 col-lg-3 d-lg-block">
+              <div id=left_sidebar>
+                <div class="promo mb-4 align-items-center hidden">
+                    <span class="close-promo"><i class="fas fa-times"></i></span>
+                    <div class="d-flex flex-column flex-fill pt-1 pt-md-3 pt-lg-2">
+                      <p class="p-0 font-smaller-1 text-center mb-2 d-flex">
+                        <img class="logo my-auto" width="65" src="{% static "v2/images/tribes/logo-townsquare.svg" %}">
+                        <span class="my-auto pl-3">Work with the coolest projects and the best developers in Web3</span>
+                      </p>
+                      <div class="font-caption font-smaller-5 text-left">
+                        <a href="{% url 'tribes_directory' %}" class="btn py-2 promo-action font-smaller-4 btn-sm mt-2 w-100">Find a Tribe</a>
+                      </div>
+                    </div>
+                </div>
+                {% if SHOW_DRESSING %}
+                  <div class="townsquare_left-sidebar feed_container">
+                    <div class="townsquare_block-header accordion collapsed" data-toggle="collapse" data-target="#search-area" >
+                      Search
+                    </div>
+                    <div class="search font-caption text-left py-3 collapse" id="search-area">
+                      <div class="search-area">
+                        <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
+                      </div>
+                      <div class="mt-2">
+
+                        <div class="checkbox_container">
+                          <input name="trending" id="trending" type="checkbox" value="0" {% if trending_only %}checked=checked{%endif%} />
+                          <label for=trending>{% trans "Trending Only" %}</label>
+                        </div>
+                      </div>
+                    </div>
+                  <hr>
+                  {% include 'townsquare/shared/feednav.html' %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="feed_container col-12 col-md-8 col-lg-6 px-0 px-sm-3">
+            {% csrf_token %}
+            {% include 'townsquare/shared/shareactivity.html' %}
+              <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
+                <span id=activity_subheader>
+                  <span>
+                    {{card_desc}}
+                  </span>
+                </span>
+                {% include 'shared/activity_container.html' with supress_infinite_more_link_hidden=1 pinned=pinned %}
+              </div>
+            </div>
+            <div class="actions_container col-12 col-md-4 col-lg-3">
+            <div id=right_sidebar>
+                {% if SHOW_DRESSING %}
+
+                  {% include 'townsquare/shared/tribe.html' %}
+                  {% include 'townsquare/shared/profilecompletion.html' %}
+                  {% if hackathon_tabs|length %}
+                    {% include 'townsquare/shared/hackathons.html' %}
+                  {% endif %}
+
+                  {% include 'townsquare/shared/reflink.html' %}
+
+                  <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2 accordion collapsed" data-toggle="collapse" data-target="#actions">
+
+                      Actions
+                      <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
+                        <p class='text-left'>
+                          <strong>Gitcoin Actions</strong> are a way to introduce entropy into your learning routine.
+                          Gitcoin will select the best educational, networking, or (sometimes)monetary or reputational opportunities and put them in front of you on a daily, weekly, monthly, and (sometimes) secret basis!
+                        </p>
+                        <p class='text-left'>
+                          Come to Gitcion daily to discover today's daily action!
+                        </p>
+                      "></i>
+
+                  </div>
+                  <div id="actions" class="mt-3 mb-4 collapse">
+                    <div class="offer_coming font-caption">
+                      <div class="checkbox_container font-smaller-5">
+                        <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
+                        <span class="checkbox"></span>
+                        <div class="filter-label ml-1">
+                          <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {% include 'townsquare/shared/offers.html' %}
+
+                    <a href="/action/new" class="font-smaller-2 mb-2">
+                      <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                      Create Action
+                    </a>
+                  </div>
+
+                  <hr>
+
+                  {% include 'townsquare/shared/matchround.html' %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal"  id="modal-get-started" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div id="get-started">
+      <div class="topbar">
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <h1 class="font-title text-white mt-5">We’re excited you’re here! Let’s get started!</h1>
+      <p class="description mt-2 mb-4">Gitcoin is a community where developers can collaborate on new ideas, build forward thinking projects, and grow long term relationships with like minded people.</p>
+        <div class="mt-3" role="document">
+            <a href="{% url 'get_hackathons' %}">
+                <p>Explore Gitcoin Hackathons</p>
+                <img src="{% static 'v2/images/top-bar/hackathons-neg.svg' %}" alt="">
+            </a>
+            <a href="{% url 'explorer' %}">
+                <p>Explore bounties</p>
+                <img src="{% static 'v2/images/top-bar/bounties-neg.svg' %}" alt="">
+            </a>
+
+            <a href="{% url 'grants_catchall_:grants' %}">
+                <p>Support public goods</p>
+                <img src="{% static 'v2/images/top-bar/grants-neg.svg' %}" alt="">
+            </a>
+            <a href="{% url 'quests_index' %}">
+                <p>Learn about Web3</p>
+                <img src="{% static 'v2/images/top-bar/quests-neg.svg' %}" alt="">
+            </a>
+        </div>
+        <div class="text-center text-white col-12">
+            <p class="mx-0 ">Just checkin it out</p>
+        </div>
+    </div>
+    </div>
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/activity_scripts.html' %}
+
+    <!-- Send direct tip on comments -->
+    <script src='{% static "v2/js/abi.js" %}'></script>
+
+    <script src='{% static "v2/js/status.js" %}'></script>
+    <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
+
+    <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
+  </body>
+</html>
